@@ -1,10 +1,49 @@
-import logo from './logo.svg';
-import './App.css';
+import ToDo from './ToDo';
+import ToDoForm from './ToDoForm';
+import {useState} from "react";
 
 function App() {
+const [todos, setTodos] = useState([]);
+
+const addTask = (userInput) => {
+  if(userInput){
+    const newItem = {
+      id: Math.random().toString(36),
+      task: userInput,
+      complete: false
+    }
+    setTodos([...todos, newItem])
+  }
+}
+
+const handleToggle = (id) => {
+  setTodos([
+    ...todos.map((todo) => 
+      todo.id === id ? {...todo, complete: !todo.complete} : {...todo}
+    )
+  ])
+}
+
+const removeTask = (id) => {
+  setTodos([...todos.filter((todo) => todo.id !== id)])
+}
+
   return (
-    <div className="App">
-      
+    <div className='App'>      
+      <header>
+        <h1>To do list: {todos.length}</h1>
+      </header>
+      <ToDoForm addTask={addTask} />
+      {todos.map((todo) => {
+        return (
+          <ToDo 
+            todo={todo}
+            key={todo.id}
+            toggleTask={handleToggle}
+            removeTask={removeTask}
+          />
+        )
+      })} 
     </div>
   );
 }
